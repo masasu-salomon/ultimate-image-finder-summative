@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Image Finder</title>
+    <style>
+        :root {
+            --primary: #4a5568;
+            --accent: #4299e1;
+            --background: #f7fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-container {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        input, select, button {
+            padding: 0.8rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .image-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .image-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .image-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .image-info {
+            padding: 1rem;
+        }
+
+        .error {
+            color: #e53e3e;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .search-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Unsplash Image Finder</h1>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for images...">
+            <select id="sortSelect">
+                <option value="relevant">Relevant</option>
+                <option value="latest">Latest</option>
+                <option value="popular">Popular</option>
+            </select>
+            <select id="orientationSelect">
+                <option value="">All Orientations</option>
+                <option value="landscape">Landscape</option>
+                <option value="portrait">Portrait</option>
+                <option value="squarish">Square</option>
+            </select>
+            <button onclick="searchImages()">Search</button>
+        </div>
+
+        <div class="loading" id="loading">Loading images...</div>
+        <div class="error" id="error"></div>
+        <div class="image-grid" id="imageGrid"></div>
+    </div>
+    <script src="config.js"></script>
+
+    <script>
+           const ACCESS_KEY = CONFIG.ACCESS_KEY;
+        
+        async function searchImages() {
+            const searchTerm = document.getElementById('searchInput').value;
+            const sortBy = document.getElementById('sortSelect').value;
+            const orientation = document.getElementById('orientationSelect').value;
+            const imageGrid = document.getElementById('imageGrid');
+            const loading = document.getElementById('loading');
+            const errorDiv = document.getElementById('error');
+
+            if (!searchTerm) {
+                errorDiv.textContent = 'Please enter a search term';
+                return;
+            }
+
+            try {
+                imageGrid.innerHTML = '';
+                errorDiv.textContent = '';
+                loading.style.display = 'block';
+
+                const url = new URL('https://api.unsplash.com/search/photos');
+                url.searchParams.append('client_id', ACCESS_KEY);
+                url.searchParams.append('query', searchTerm);
+                url.searchParams.append('order_by', sortBy);
+                if (orientation) url.searchParams.append('orientation', orientation);
+
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to fetch images');
+                
+                const data = await response.json();
+                displayImages(data.results);
+            } catch (error) {
+                errorDiv.textContent = error.message;
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function displayImages(images) {
+            const imageGrid = document.getElementById('imageGrid');
+            
+            if (images.length === 0) {
+                imageGrid.innerHTML = '<div class="error">No images found</div>';
+                return;
+            }
+
+            imageGrid.innerHTML = images.map(image => `
+                <div class="image-card">
+                    <img src="${image.urls.regular}" alt="${image.alt_description}">
+                    <div class="image-info">
+                        <p>By ${image.user.name}</p>
+                        <a href="${image.links.html}" target="_blank">View on Unsplash</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initial search
+        searchImages();
+    </script>
+</body>
+</html>
