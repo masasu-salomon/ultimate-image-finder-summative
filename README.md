@@ -1,6 +1,7 @@
 # Ultimate Image Finder
 
-A sophisticated image search application powered by the Unsplash API, designed for academic assessment purposes. This application demonstrates mastery of front-end development concepts and API integration.
+The Ultimate Image Finder is a powerful and efficient tool for discovering royalty-free images quickly. It provides real value by offering seamless access to high-quality images without the hassle of licensing concerns. Designed to meet the needs of users looking for free visual content, it rivals the basic versions of commercial image search tools, making it a practical and time-saving solution for creatives, marketers, and content creators.
+
 
 ## Features
 
