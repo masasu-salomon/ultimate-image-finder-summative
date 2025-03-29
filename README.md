@@ -23,13 +23,17 @@ The Ultimate Image Finder is a powerful and efficient tool for discovering royal
   - Security considerations
   - Best practice implementation
 
-## Setup Instructions
+## How to access it 
 
-1. **Clone Repository**
+1. **Locally : Clone Repository**
 
    git clone https://github.com/masasu-salomon/ultimate-image-finder.git
    cd ultimate-image-finder
 
+2. ** Deployed Website **
+   
+   https://www.salomonmasasu.tech/
+
 ## Special Thanks
 
-Thank you Unsplash.com for your free use api
+Thank you Unsplash.com for your free use for their api
