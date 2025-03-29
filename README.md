@@ -17,12 +17,6 @@ The Ultimate Image Finder is a powerful and efficient tool for discovering royal
   - Responsive grid layout
   - Error handling and loading states
 
-- **Academic Requirements**
-  - Clear code separation
-  - Documentation standards
-  - Security considerations
-  - Best practice implementation
-
 ## How to access it 
 
 1. **Locally : Clone Repository**
